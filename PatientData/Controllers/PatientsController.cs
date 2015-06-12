@@ -9,9 +9,11 @@ using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
+using System.Web.Http.Cors;
 
 namespace PatientData.Controllers
 {
+    [EnableCors("*","*","GET")]
     public class PatientsController : ApiController
     {
         IMongoCollection<Patient> _patients;

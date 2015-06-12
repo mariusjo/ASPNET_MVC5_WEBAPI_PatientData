@@ -5,6 +5,8 @@ using System.Net.Http;
 using System.Web.Http;
 using Microsoft.Owin.Security.OAuth;
 using Newtonsoft.Json.Serialization;
+using System.Web.Http.Cors;
+
 
 namespace PatientData
 {
@@ -16,6 +18,10 @@ namespace PatientData
             // Configure Web API to use only bearer token authentication.
             config.SuppressDefaultHostAuthentication();
             config.Filters.Add(new HostAuthenticationFilter(OAuthDefaults.AuthenticationType));
+            
+            //Enable cors. attributes can be set here, or on specific controllers
+            var cors = new EnableCorsAttribute("*","*","GET");
+            config.EnableCors(/*cors*/);
 
             // Web API routes
             config.MapHttpAttributeRoutes();
