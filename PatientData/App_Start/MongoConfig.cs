@@ -12,7 +12,17 @@ namespace PatientData.App_Start
     {
         public static void Seed()
         {
-            var patients = PatientDb.Open();
+            IMongoCollection<Patient> patients;
+            try
+            {
+                patients = PatientDb.Open();
+            }
+            catch (Exception e)
+            {
+
+                Console.WriteLine(e.Message);
+                throw new Exception("Error when trying to retrieve patient data for seeding!", e);
+            }
 
             if (patients.Find(p => p.Name == "Marius").ToListAsync().Result.Count <= 0)
             {

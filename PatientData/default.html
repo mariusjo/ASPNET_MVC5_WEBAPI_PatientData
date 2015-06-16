@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+</head>
+<body>
+    <h3>Auth Request</h3>
+
+    <form id="userData">
+        <!--correct name is email for register. since I am only using one form here, I changed this to username for login-->
+        <input type="text" name="email" placeholder="email" />
+        <input type="password" name="password" placeholder="Password" />
+        <input type="password" name="confirmPassword" placeholder="Confirm Password" />
+
+        <input type="button" id="register" value="Register" />
+    </form>
+    <br />
+    <form id="loginData">
+        <input type="text" name="username" placeholder="Name" />
+        <input type="password" name="password" placeholder="Password" />
+
+        <input type="button" id="login" value="Login" />
+
+    </form>
+
+    <br />
+
+    <button id="getPatients">Get Patients</button>
+
+    <pre id="output">
+    </pre>
+
+    <script src="Scripts/jquery-1.10.2.js"></script>
+
+    <script>
+
+
+        $(function () {
+            var url = "/api/patients/";
+
+            //func. for response display
+            var showResponse = function (object) {
+                $("#output").text(JSON.stringify(object, null, 4));
+            };
+
+            var getHeaders = function () {
+                if (accessToken) {
+                    return { "Authorization":"Bearer " + accessToken };
+                }
+            };
+
+            //click event for getPatients button
+            var getPatients = function () {
+
+                //$.get(url).always(showResponse);
+                $.ajax(url, {
+                    type: "GET",
+                    headers: getHeaders()
+                }).always(showResponse);
+
+                return false;
+            };
+
+            //Add click event to getPatients button
+            $("#getPatients").click(getPatients);
+
+            //click event for register form button
+            var postRegisterForm = function () {
+
+                var regUrl = "/api/account/register";
+
+                var data = $("#userData").serialize();
+
+                $.post(regUrl, data).always(showResponse);
+
+                return false;
+
+            };
+
+            //Add click event to register form button
+            $("#register").click(postRegisterForm)
+
+
+            var saveAccessToken = function (data) {
+                accessToken = data.access_token;
+                return false;
+            };
+
+            var login = function () {
+                var loginUrl = "/token";
+                var data = $("#loginData").serialize();
+                data = data + "&grant_type=password";
+                $.post(loginUrl, data)
+                    .success(saveAccessToken)
+                    .always(showResponse);
+                return false;
+            };
+
+            var accessToken = "";
+
+            //Add click event to login button
+            $("#login").click(login);
+
+
+
+        });
+    </script>
+</body>
+</html>

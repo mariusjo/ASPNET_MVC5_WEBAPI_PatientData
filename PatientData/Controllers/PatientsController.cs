@@ -14,13 +14,23 @@ using System.Web.Http.Cors;
 namespace PatientData.Controllers
 {
     [EnableCors("*","*","GET")]
+    [Authorize]
     public class PatientsController : ApiController
     {
         IMongoCollection<Patient> _patients;
 
         public PatientsController()
         {
-            _patients = PatientDb.Open();
+            try
+            {
+                _patients = PatientDb.Open();
+            }
+            catch (Exception e)
+            {
+
+                Console.WriteLine(e.Message);
+                throw new Exception("Error when trying to retrieve patient data for query!", e);
+            }
         }
 
         public IEnumerable<Patient> Get()
